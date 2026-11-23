@@ -6,8 +6,8 @@
 > [RGx01/EMT](https://github.com/RGx01/EMT) instead. Report what you find in
 > [EMT's issues](https://github.com/RGx01/EMT/issues), saying it is a beta.
 
-[![Release](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FRGx01%2FEMT%2Fmain%2Fconfig.yaml&query=%24.version&label=release&prefix=v&color=orange)](https://github.com/RGx01/EMT/releases)
-![Stage: beta](https://img.shields.io/badge/stage-beta-orange)
+[![Beta](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FRGx01%2FEMT_beta%2Fmain%2Fconfig.yaml&query=%24.version&label=beta&prefix=v&color=orange)](https://github.com/RGx01/EMT_beta)
+[![Release](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FRGx01%2FEMT%2Fmain%2Fconfig.yaml&query=%24.version&label=release&prefix=v&color=green)](https://github.com/RGx01/EMT/releases)
 [![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20Noncommercial-blue)](LICENSE)
 ![aarch64](https://img.shields.io/badge/aarch64-yes-green)
 ![amd64](https://img.shields.io/badge/amd64-yes-green)
@@ -15,12 +15,6 @@
 A Home Assistant add-on for Octopus Energy accounts: each half-hour's electricity cost, your devices
 (a car, a battery, a heat pump) split out of the meter, Intelligent Octopus Go's smart charging and
 its 6-hour cap, and your history settled against Octopus's own bill.
-
-> **Public beta.** EMT is open to anyone to try before its first release. Expect rough edges;
-> please report them — see [BETA.md](BETA.md).
->
-> **2026.11.0b33 is the last beta here.** EMT's first release, **2026.12.0**, comes to this repository on
-> 1 December 2026. Betas after it come from [EMT_beta](https://github.com/RGx01/EMT_beta), a separate add-on.
 
 EMT is the successor to [Energy Meter Tracker v4](https://github.com/RGx01/energy-meter-tracker-addon).
 It is a **new add-on with its own slug** (`emt`), not an upgrade: it installs beside v4, runs beside
@@ -156,8 +150,9 @@ Updates arrive in Home Assistant's add-on store like any other add-on's. Before 
 starts, EMT copies its database aside, so you can go back to it if an update goes wrong. A release that changes
 something you rely on says so under **⚠️ Breaking** in the [changelog](CHANGELOG.md).
 
-EMT uses CalVer, as Home Assistant does: `YYYY.M.PATCH` — `2026.11.0` is the first release in
-November 2026, `2026.11.1` the next. Betas are `2026.11.0b1`, `b2`, …
+EMT uses CalVer, as Home Assistant does: `YYYY.M.PATCH` — `2026.12.0` is the first release, in
+December 2026, `2026.12.1` the next. A beta is `b1`, `b2`, … on the version it leads to (`2027.1.0b1`), and
+comes from [EMT_beta](https://github.com/RGx01/EMT_beta), never this repository.
 
 ## More than one property
 
