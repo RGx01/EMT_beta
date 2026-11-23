@@ -1,5 +1,11 @@
 # EMT — Energy Meter Tracker
 
+> **This is EMT's beta repository.** It carries the next version of EMT ahead of its release, as a
+> separate add-on, **EMT (beta)** (slug `emt_beta`, direct port **8090**), which installs beside or instead
+> of EMT. Your data moves across with a backup and a restore. For the released version, add
+> [RGx01/EMT](https://github.com/RGx01/EMT) instead. Report what you find in
+> [EMT's issues](https://github.com/RGx01/EMT/issues), saying it is a beta.
+
 [![Release](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FRGx01%2FEMT%2Fmain%2Fconfig.yaml&query=%24.version&label=release&prefix=v&color=orange)](https://github.com/RGx01/EMT/releases)
 ![Stage: beta](https://img.shields.io/badge/stage-beta-orange)
 [![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20Noncommercial-blue)](LICENSE)

@@ -35,18 +35,20 @@ def _key(k):
 class TheManifest(unittest.TestCase):
 
     def test_slug_name_version(self):
-        self.assertEqual(_key("slug"), "emt")
-        self.assertEqual(_key("name"), "EMT — Energy Meter Tracker")
+        # EMT_beta: its own add-on, beside EMT
+        self.assertEqual(_key("slug"), "emt_beta")
+        self.assertEqual(_key("name"), "EMT (beta) — Energy Meter Tracker")
         self.assertRegex(_key("version"), r"^\d{4}\.\d{1,2}\.\d+(b\d+)?$")
-        self.assertEqual(_key("panel_title"), "EMT")
+        self.assertEqual(_key("panel_title"), "EMT beta")
 
     def test_the_port_is_as_v4_has_it(self):
         # GUARD: passes on the parent tree too — the direct port stays published (8098)
-        self.assertIn("ports:\n  8099/tcp: 8098", CFG)
+        self.assertIn("ports:\n  8099/tcp: 8090", CFG)   # EMT_beta: 8090, beside EMT's 8098
         self.assertIn("ingress: true", CFG)
 
     def test_every_link_is_this_repository(self):
-        self.assertEqual(json.loads(_read("repository.json"))["url"], "https://github.com/RGx01/EMT")
+        self.assertEqual(json.loads(_read("repository.json"))["url"], "https://github.com/RGx01/EMT_beta")
+        # the code's links stay EMT's: its issues, and the releases a beta's update notice reads
         self.assertIn('"https://github.com/RGx01/EMT"', _read("build.yaml"))
         self.assertIn("'https://github.com/RGx01/EMT/issues'", _read("web", "templates", "meter_config.html"))
         self.assertIn('_RELEASES_API = "https://api.github.com/repos/RGx01/EMT/releases"', _read("web", "server.py"))
