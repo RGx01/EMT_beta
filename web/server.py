@@ -4258,7 +4258,7 @@ def _is_prerelease(v: str) -> bool:
     return _version_key(v)[3] == 0
 
 
-_RELEASES_API = "https://api.github.com/repos/RGx01/EMT/releases"
+_RELEASES_API = "https://api.github.com/repos/RGx01/EMT_beta/releases"   # EMT_beta: its betas are released here
 _update_check_cache = {"checked_at": 0.0, "payload": None}
 _UPDATE_CHECK_TTL = 86400.0   # once a day — the release cadence is far slower
 

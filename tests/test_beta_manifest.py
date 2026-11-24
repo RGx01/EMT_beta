@@ -48,10 +48,11 @@ class TheManifest(unittest.TestCase):
 
     def test_every_link_is_this_repository(self):
         self.assertEqual(json.loads(_read("repository.json"))["url"], "https://github.com/RGx01/EMT_beta")
-        # the code's links stay EMT's: its issues, and the releases a beta's update notice reads
+        # the code's links stay EMT's (its issues); the update notice reads EMT_beta's releases, where its betas are
+        # released (24 Nov 2026, the user): EMT's would never list a beta, and would offer the release it can't install
         self.assertIn('"https://github.com/RGx01/EMT"', _read("build.yaml"))
         self.assertIn("'https://github.com/RGx01/EMT/issues'", _read("web", "templates", "meter_config.html"))
-        self.assertIn('_RELEASES_API = "https://api.github.com/repos/RGx01/EMT/releases"', _read("web", "server.py"))
+        self.assertIn('_RELEASES_API = "https://api.github.com/repos/RGx01/EMT_beta/releases"', _read("web", "server.py"))
 
     def test_the_version_readers_and_the_gate(self):
         import engine

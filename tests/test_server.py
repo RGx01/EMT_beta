@@ -4439,14 +4439,14 @@ class TestUpdateCheck(unittest.TestCase):
                {"tag_name": "v2026.12.0b1", "html_url": "d", "draft": True}]
         with patch("urllib.request.urlopen", return_value=self._urlopen(rel)) as up:
             d = self.client.get("/api/update-check").get_json()
-        self.assertEqual(up.call_args[0][0].full_url, "https://api.github.com/repos/RGx01/EMT/releases?per_page=20")
+        self.assertEqual(up.call_args[0][0].full_url, "https://api.github.com/repos/RGx01/EMT_beta/releases?per_page=20")
         self.assertEqual((d["latest"], d["update_available"], d["url"]), ("2026.11.0b2", True, "u2"))
 
     def test_a_release_asks_emts_latest_and_a_beta_of_it_is_not_newer(self):
         server.APP_VERSION = "2026.11.0"
         with patch("urllib.request.urlopen", return_value=self._urlopen({"tag_name": "v2026.11.0"})) as up:
             d = self.client.get("/api/update-check").get_json()
-        self.assertEqual(up.call_args[0][0].full_url, "https://api.github.com/repos/RGx01/EMT/releases/latest")
+        self.assertEqual(up.call_args[0][0].full_url, "https://api.github.com/repos/RGx01/EMT_beta/releases/latest")
         self.assertFalse(d["update_available"])
         server._update_check_cache.update({"checked_at": 0.0, "payload": None})
         server.APP_VERSION = "2026.11.0b2"
