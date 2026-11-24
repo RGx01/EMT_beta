@@ -34,23 +34,28 @@
   <p>Four views, chosen under <strong>Show</strong>:</p>
   <h3>Devices</h3>
   <ul>
-    <li>A bar each period — <strong>HH</strong> (a day's half-hours), <strong>Daily</strong>,
-      <strong>Monthly</strong>, <strong>Yearly</strong> — split into the house and each device, with
-      export below the axis.</li>
+    <li>Bars split into the house and each device, with export below the axis.</li>
+    <li><strong>Period</strong> or <strong>Span</strong> chooses what is on screen, and <strong>HH</strong>,
+      <strong>Day</strong>, <strong>Month</strong> or <strong>Year</strong> what each bar holds.</li>
+    <li>Under <strong>Period</strong>: <strong>HH</strong> shows a day's half-hours, <strong>Day</strong> a
+      month's days, <strong>Month</strong> the months of the years ticked, <strong>Year</strong> the years; the
+      row below picks the day, the month or the years.</li>
     <li><strong>Span</strong> shows a stretch you pick: a <em>tariff</em>, from its start to its end,
       with each stretch between its price changes under it; or an <em>era</em>, from its start to its own
-      end or today, listed by kind as in the eras menu. <strong>Day</strong>, <strong>Month</strong> or
-      <strong>Year</strong> sets a bar's length; until you choose, a bar a day for a span of up to two months,
-      a bar a month for a longer one.</li>
-    <li>On <strong>Monthly</strong>, and on a span by the day or the month, <strong>Date</strong> puts the bars in
+      end or today, listed by kind as in the eras menu. Its bars are a <strong>Day</strong>, a
+      <strong>Month</strong> or a <strong>Year</strong> (no HH on a span); until you choose, a bar a day for a
+      span of up to two months, a bar a month for a longer one.</li>
+    <li>By the <strong>Month</strong>, and on a span by the day or the month, <strong>Date</strong> puts the bars in
       date order and <strong>Month</strong> groups them by month across the years (every January together,
       each year a shade darker). A bold line separates the months — twelve divisions — and by the day a fainter
       one each month's years; the Net line runs within each, not on into the next. Tariffs and eras show in date
       order only.</li>
     <li><strong>Billing</strong> or <strong>Calendar</strong> periods; <strong>kWh</strong>,
       <strong>Cost</strong> or <strong>CO₂</strong>; the years shown, below.</li>
-    <li><strong>Net</strong> draws import less export as a line; <strong>Inc. standing charge</strong>
-      adds it to the cost.</li>
+    <li><strong>Net</strong> draws import less export as a line (on HH, the day's net so far);
+      <strong>Running total</strong>, by the day, the month or the year, the net so far from the first bar, on
+      its own axis — its last point is the table's Total. Not in month order. <strong>Inc. standing
+      charge</strong> adds it to the cost.</li>
     <li><strong>Tariffs</strong> lays your Octopus tariffs along the bars (import above, export below);
       hover one for its prices. <strong>Eras</strong> marks your home's changes (below).</li>
     <li><strong>Zoom</strong>: the bar in the table's heading is a window on the bars — drag either end to zoom
@@ -65,7 +70,10 @@
     house, a device, or your export — so you can see how much of it fell on cheap or dear half-hours, on
     any tariff. With more than a dozen brackets, as on Agile, the legend is a single colour scale: hover a
     colour to name its bracket and pick it out in the bars. <strong>%</strong> shows each bracket's share. <strong>Span</strong> works here as in
-    Devices. Below the chart, the average price against
+    Devices. <strong>Import &amp; export</strong>, where you export, shows both: import above the axis and export
+    below in kWh, each in its own colours (export's indigo to violet, and magenta where you paid to export). In
+    Cost the bars are money: above the axis what you paid — import, or export at a negative price — and below
+    what you were paid — export, or import in a plunge. Below the chart, the average price against
     the whole meter's, and a row a bracket.
   </p>
   <h3>Flow</h3>
@@ -75,9 +83,9 @@
       <strong>export</strong> out of the house. The Grid and the Export bar are named with their totals in
       the measure shown. The house is as tall as its own import; its export starts at that size and widens
       (or narrows) to the export's.</li>
-    <li><strong>Daily</strong> a day, <strong>Monthly</strong> a month, <strong>Yearly</strong> the years
-      ticked — or <strong>Span</strong>: a tariff or an era, as in Devices, drawn as one flow.
-      (They are the bar views' HH, Daily and Monthly, named by what Flow totals.)</li>
+    <li>Under <strong>Period</strong>, <strong>Day</strong> a day, <strong>Month</strong> a month,
+      <strong>Year</strong> the years ticked — or <strong>Span</strong>: a tariff or an era, as in Devices,
+      drawn as one flow.</li>
     <li>In <strong>Cost</strong>, the import goes through the <strong>price</strong> it was charged
       (Rate brackets' 2.5p bands; bands under 2% of the cost together as <strong>Other</strong>), and the
       export leaves through the price it earned (under 2% together as <strong>Other export</strong>), the

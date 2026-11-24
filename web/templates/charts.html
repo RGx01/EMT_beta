@@ -125,7 +125,7 @@
   .bar-toolbar-left {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 6px 10px;
     flex-wrap: wrap;
   }
   .bar-toolbar-right {
@@ -135,7 +135,8 @@
   }
   /* The view (1 Nov 2026, the user): the toolbar's first choice, a little bolder, a rule after it */
   .bar-seg.bar-show .bar-seg-btn { font-weight: 600; }
-  .bar-tb-sep { width: 1px; align-self: stretch; margin: 2px 4px; background: var(--border); }
+  /* A rule between every group (24 Nov 2026, the user); barTbSepSync hides one whose group is hidden */
+  .bar-tb-sep { width: 1px; align-self: stretch; margin: 2px 6px; background: var(--border); }
   /* The page's selects are full width (base.html); here each is as wide as its text */
   .bar-toolbar select { width: auto; max-width: 260px; }
   #bar-series-slot select { width: auto; max-width: 260px; }
@@ -586,32 +587,37 @@ try { localStorage.removeItem(EMT.lsKey('emt_bar_summary')); } catch (e) {}
         <button class="bar-seg-btn"        onclick="barSetShow('running',this)">Running total</button>
       </div>
       <span class="bar-tb-sep" aria-hidden="true"></span>
+      <!-- Period or Span, then what each bar holds (24 Nov 2026, the user: one resolution row for both) -->
       <div class="bar-seg" id="bar-period-seg">
-        <button class="bar-seg-btn"        onclick="barSetPeriod('hh',this)" id="bar-hh-btn" title="Half-hourly breakdown of a single day">HH</button>
-        <button class="bar-seg-btn active" onclick="barSetPeriod('daily',this)" id="bar-daily-btn">Daily</button>
-        <button class="bar-seg-btn"        onclick="barSetPeriod('monthly',this)" id="bar-monthly-btn">Monthly</button>
-        <button class="bar-seg-btn"        onclick="barSetPeriod('yearly',this)" id="bar-yearly-btn">Yearly</button>
-        <button class="bar-seg-btn"        onclick="barSetPeriod('span',this)" id="bar-span-btn" style="display:none"
+        <button class="bar-seg-btn active" onclick="barSetKind('period',this)" id="bar-period-btn"
+                title="A day, a month or the years, chosen in the row below">Period</button>
+        <button class="bar-seg-btn"        onclick="barSetKind('span',this)" id="bar-span-btn" style="display:none"
                 title="A stretch you pick: a tariff, a stretch between its price changes, or an era">Span</button>
       </div>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
+      <div class="bar-seg" id="bar-res-seg" title="What each bar holds">
+        <button class="bar-seg-btn"        onclick="barSetRes('hh',this)" data-res="hh" id="bar-hh-btn" title="A day's half-hours">HH</button>
+        <button class="bar-seg-btn active" onclick="barSetRes('day',this)" data-res="day" id="bar-day-btn">Day</button>
+        <button class="bar-seg-btn"        onclick="barSetRes('month',this)" data-res="month" id="bar-month-btn">Month</button>
+        <button class="bar-seg-btn"        onclick="barSetRes('year',this)" data-res="year" id="bar-year-btn">Year</button>
+      </div>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
       <div class="bar-seg" id="bar-cal-seg">
         <button class="bar-seg-btn active" onclick="barSetCalendar(false,this)">Billing</button>
         <button class="bar-seg-btn"        onclick="barSetCalendar(true,this)">Calendar</button>
       </div>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
       <div class="bar-seg" id="bar-metric-seg">
         <button class="bar-seg-btn active" onclick="barSetMetric('kwh',this)">kWh</button>
         <button class="bar-seg-btn"        onclick="barSetMetric('cost',this)" id="bar-cost-btn">Cost</button>
         <button class="bar-seg-btn"        onclick="barSetMetric('co2',this)"  id="bar-co2-btn"  style="display:none">CO₂</button>
       </div>
-      <div class="bar-seg" id="bar-spanres-seg" style="display:none;" title="A span's bars: a day, a month or a year each">
-        <button class="bar-seg-btn" onclick="barSetSpanRes('day',this)">Day</button>
-        <button class="bar-seg-btn" onclick="barSetSpanRes('month',this)">Month</button>
-        <button class="bar-seg-btn" onclick="barSetSpanRes('year',this)">Year</button>
-      </div>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
       <div class="bar-seg" id="bar-order-seg" style="display:none;" title="Order the bars by calendar date, or grouped by month across years">
         <button class="bar-seg-btn active" onclick="barSetOrder('date',this)">Date</button>
         <button class="bar-seg-btn"        onclick="barSetOrder('month',this)">Month</button>
       </div>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
       <span id="bar-acc-wrap" style="display:none; align-items:center; gap:8px; font-size:12px; color:var(--muted); flex-wrap:wrap;">
         <span class="bar-seg" id="bar-acc-view" title="The running total along a time axis, or wound a year a turn">
           <button class="bar-seg-btn active" onclick="barSetAccView('line',this)">Line</button>
@@ -622,6 +628,7 @@ try { localStorage.removeItem(EMT.lsKey('emt_bar_summary')); } catch (e) {}
           <button class="bar-seg-btn"        onclick="barSetAccMode('year',this)">Year by year</button>
         </span>
       </span>
+      <span class="bar-tb-sep" aria-hidden="true"></span>
       <span id="bar-br-wrap" style="display:none; align-items:center; gap:8px; font-size:12px; color:var(--muted);">
         <label style="display:flex; align-items:center; gap:6px; cursor:pointer;" title="Each bracket's share of the bar's kWh">
           <input type="checkbox" id="bar-br-pct" onchange="barSetBrPct(this.checked)" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
@@ -655,6 +662,11 @@ try { localStorage.removeItem(EMT.lsKey('emt_bar_summary')); } catch (e) {}
              title="Draw import minus export as a line over the bars">
         <input type="checkbox" id="bar-net-cb" onchange="barSaveState(); barRender();" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
         <span id="bar-net-text">Net</span>
+      </label>
+      <label id="bar-run-wrap" style="display:none; align-items:center; gap:6px; font-size:12px; color:var(--muted); cursor:pointer;"
+             title="Draw the net so far (import minus export, from the first bar) as a line on its own axis">
+        <input type="checkbox" id="bar-run-cb" onchange="barSaveState(); barRender();" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+        Running total
       </label>
       <label id="bar-tariff-wrap" style="display:none; align-items:center; gap:6px; font-size:12px; color:var(--muted); cursor:pointer;"
              title="The account's tariffs: along the bars, import above the axis and export below; on Running total a band on Lifetime, dots on Year by year; hover one for its details">
@@ -1197,13 +1209,14 @@ function barPdfSettings() {
   var acc = document.getElementById('bar-acc-series');
   if (shown(acc) && acc.selectedIndex >= 0) add('Series', acc.options[acc.selectedIndex].text);
   add('Winding', seg('bar-acc-mode'));
-  add('Bars', seg('bar-spanres-seg'));
+  add('Bars', seg('bar-res-seg'));
   add('Order', seg('bar-order-seg'));
   var lbl = document.querySelector('#bar-sub-bar .bar-period-label');
   add(lbl ? 'Range' : 'Years', lbl ? lbl.textContent.trim()
       : Array.from(barActiveYears).sort().join(', '));
   var opts = [['bar-standing-wrap', 'bar-standing-cb', 'Standing charge'],
-              ['bar-net-wrap', 'bar-net-cb', null], ['bar-tariff-wrap', 'bar-tariff-cb', 'Tariffs'],
+              ['bar-net-wrap', 'bar-net-cb', null], ['bar-run-wrap', 'bar-run-cb', 'Running total'],
+              ['bar-tariff-wrap', 'bar-tariff-cb', 'Tariffs'],
               ['bar-eras-wrap', 'bar-eras-cb', 'Eras']]
     .filter(function (o) { var cb = document.getElementById(o[1]); return shown(document.getElementById(o[0])) && cb && cb.checked; })
     .map(function (o) { return o[2] || (document.getElementById('bar-net-text') || {}).textContent || 'Net'; });
@@ -1535,6 +1548,8 @@ var barMetric = 'kwh';
 var barMonthOrder = 'date';  // monthly bar ordering: 'date' (chronological) or 'month' (month-first, then year)
 // Span's bars: a day, a month or a year each (22 Nov 2026, the user); null, as the span's length chooses
 var barSpanRes = null;
+// The period Period returns to from Span (24 Nov 2026): the last of HH, Daily, Monthly or Yearly
+var barLastPeriod = 'daily';
 var barCalendar = false;   // false = billing periods, true = calendar periods
 var barBillingDay = 1;
 var barDailyMonth = null;  // now a bKey string e.g. "2026-04-15"
@@ -1569,6 +1584,18 @@ function barIncStanding() {
   return cb ? cb.checked : false;
 }
 
+// Running total by the day, the month or the year (24 Nov 2026, the user: as HH has): the net so far from the
+// first bar, on the right-hand axis. Not on HH (its Net box is its running total), in Rate brackets, Flow or
+// Running total, nor in month order, where the bars are not in time order.
+function barRunAvailable() {
+  if (barPeriod === 'hh' || barBrackets() || barFlow() || barRunning()) return false;
+  return !(barMonthOrder === 'month' && (barPeriod === 'monthly' || barSpanMonthFirst()));
+}
+function barShowRun() {
+  var cb = document.getElementById('bar-run-cb');
+  return !!(cb && cb.checked) && barRunAvailable();
+}
+
 // The Net line over the bars (31 Oct 2026; Net was a view of its own, a bar per period).
 function barShowNet() {
   if (barBrackets()) return false;          // the brackets are import's price, not the bill
@@ -1583,8 +1610,10 @@ function barSaveState() {
       period:   barPeriod,
       metric:   barMetric,
       net:      barShowNet(),
+      run:      !!(document.getElementById('bar-run-cb') || {}).checked,
       order:    barMonthOrder,
       spanRes:  barSpanRes,
+      lastPeriod: barLastPeriod,
       calendar: barCalendar,
       hhDate:   barHHDate,
       bKey:     typeof barDailyMonth === 'string' ? barDailyMonth : (barDailyMonth ? (barDailyMonth.year + '-' + String(barDailyMonth.month).padStart(2,'0') + '-01') : null),
@@ -1622,6 +1651,8 @@ function barLoadState(availableYears) {
     var st = JSON.parse(raw);
     if (['daily','monthly','yearly','hh','span'].indexOf(st.period) !== -1) barPeriod = st.period;
     if (st.period === 'era') barPeriod = 'span';                     // its name before 4 Nov 2026's rework
+    if (['daily','monthly','yearly','hh'].indexOf(st.lastPeriod) !== -1) barLastPeriod = st.lastPeriod;
+    if (barPeriod !== 'span') barLastPeriod = barPeriod;
     if (typeof st.span === 'string') barSpanId = st.span;
     else if (typeof st.flowEra === 'string') barSpanId = st.flowEra;
     if (['kwh','cost','co2'].indexOf(st.metric) !== -1)       barMetric = st.metric;
@@ -1649,6 +1680,8 @@ function barLoadState(availableYears) {
     // The Net line; a state saved under the old Net view (st.view === 'net') turns it on
     var nc = document.getElementById('bar-net-cb');
     if (nc) nc.checked = st.net === true || (st.net === undefined && st.view === 'net');
+    var rc = document.getElementById('bar-run-cb');
+    if (rc) rc.checked = st.run === true;
     var tc = document.getElementById('bar-tariff-cb');
     if (tc) tc.checked = st.tariffs === true;
     var ec = document.getElementById('bar-eras-cb');
@@ -1776,11 +1809,36 @@ async function barInit() {
   await _barFetchFresh();
 }
 
+// A rule before each toolbar group that shows, none before a hidden one, none twice in a row (24 Nov 2026)
+function barTbSepSync() {
+  var row = document.querySelector('.bar-toolbar-left');
+  if (!row) return;
+  var seen = false, pending = null;
+  var want = [];
+  Array.prototype.forEach.call(row.children, function(el) {
+    if (el.classList.contains('bar-tb-sep')) { want.push([el, 'none']); if (seen) pending = want[want.length - 1]; return; }
+    if (el.style.display === 'none' || getComputedStyle(el).display === 'none') return;
+    if (pending) { pending[1] = ''; pending = null; }
+    seen = true;
+  });
+  want.forEach(function(w) { if (w[0].style.display !== w[1]) w[0].style.display = w[1]; });
+}
+// The groups are shown and hidden from many places; the rules follow whatever they do
+document.addEventListener('DOMContentLoaded', function() {
+  var row = document.querySelector('.bar-toolbar-left');
+  if (!row || !window.MutationObserver) return;
+  new MutationObserver(function(ms) {
+    if (ms.some(function(m) { return !m.target.classList.contains('bar-tb-sep'); })) barTbSepSync();
+  }).observe(row, {attributes: true, attributeFilter: ['style'], subtree: true});
+  barTbSepSync();
+});
+
 function barSyncUI() {
   // Sync period/metric/view segment buttons to current state vars
-  // by the period each button sets, not its words: Flow names them by the span they total
+  // Period or Span; the resolution's buttons are barOrderResSync's
   document.querySelectorAll('#bar-period-seg .bar-seg-btn').forEach(function(b){
-    b.classList.toggle('active', (b.getAttribute('onclick') || '').indexOf("'" + barPeriod + "'") !== -1);
+    var span = b.id === 'bar-span-btn';
+    b.classList.toggle('active', span === (barPeriod === 'span'));
   });
   // Billing/Calendar toggle is meaningless for the HH (single-day) view — hide it.
   var calSeg = document.getElementById('bar-cal-seg');
@@ -1855,7 +1913,17 @@ function barNetRaw(agg) {
 // charge, when shown, sits on the day's first slot and so counts from there). A CO₂ slot with no carbon adds
 // nothing; until one has, the point is empty. Elsewhere each period's own net. The sum is of the
 // unrounded half-hours, rounded as it is drawn: rounding each first drifts over 48.
-function barNetSeries(aggList, isHH) {
+// `run` on a day or longer (24 Nov 2026): the running total of each bar's own net, as the bill rounds it, so its
+// last point is the table's net total to the penny.
+function barNetSeries(aggList, isHH, run) {
+  if (!isHH && run) {
+    var acc = null, dq = barMetric === 'co2' ? 100 : (barMetric === 'cost' ? 100 : 1000);
+    return aggList.map(function(agg) {
+      var v = barNetVal(agg);
+      if (v != null) acc = (acc || 0) + v;
+      return acc == null ? null : Math.round(acc * dq) / dq;
+    });
+  }
   if (!isHH) return aggList.map(barNetVal);
   var run = null, dp = barMetric === 'co2' ? 100 : 1000;
   return aggList.map(function(agg) {
@@ -1890,7 +1958,8 @@ function barAlignZero(datasets, lanes) {
     datasets.forEach(function(ds) {
       var v = ds.data[i];
       if (v == null) return;
-      if (ds._net) { lmax = Math.max(lmax, v); lmin = Math.min(lmin, v); }
+      if (ds.yAxisID === 'yNet') { lmax = Math.max(lmax, v); lmin = Math.min(lmin, v); }
+      else if (ds._net) { pos = Math.max(pos, v); neg = Math.min(neg, v); }   // a Net line on the bars' axis
       else if (v > 0) p += v; else q += v;
     });
     pos = Math.max(pos, p); neg = Math.min(neg, q);
@@ -2409,6 +2478,7 @@ var barAccStart = 'jan';          // PR 3: 'jan' | 'billing' | 'tariff:<YYYY-MM-
 var barAccIncStanding = false;
 var barAccCharts = [];
 var barBrSeries = 'meter';        // 'meter' (the whole meter) | 'electricity_main' (the house) | a device id | 'export'
+                                  // | 'both': the whole meter's import above the axis, export below (24 Nov 2026)
 var barBrPct = false;             // each bracket's share of the bucket's kWh
 var barBrWidth = 2.5;             // pence; the server's width_p
 var barBrDays = null;             // {YYYY-MM-DD: {series: {n: [kWh, £]}}}
@@ -2463,12 +2533,17 @@ function barBrFailed(e) {
 
 function barBrOf(agg) { return ((agg && agg.br) || {})[barBrSeries] || {}; }
 
-// The brackets with usage across the buckets, cheapest first.
-function barBrNs(aggList) {
+// The brackets with usage across the buckets, cheapest first: the series shown's, or `series`'s.
+function barBrNs(aggList, series) {
   var seen = {};
-  aggList.forEach(function(agg) { Object.keys(barBrOf(agg)).forEach(function(n) { seen[n] = true; }); });
+  aggList.forEach(function(agg) {
+    var b = series ? (((agg && agg.br) || {})[series] || {}) : barBrOf(agg);
+    Object.keys(b).forEach(function(n) { seen[n] = true; });
+  });
   return Object.keys(seen).map(Number).sort(function(a, b) { return a - b; });
 }
+// Import & export: the whole meter's import above the axis and the export below, each in its own colours
+function barBrBoth() { return barBrSeries === 'both'; }
 
 function barBrPence(v) {
   var t = (Math.round(v * 100) / 100).toString();
@@ -2487,15 +2562,20 @@ function barBrLabel(n) {
 // money out: an import plunge is blue; export, earned, runs blue to purple, the best-paid bracket the
 // deepest purple; a negative export price, paid to export, is red. `side`: Flow's 'import' or 'export'
 // bands, whatever Rate brackets shows; else Rate brackets' series.
-function barBrColor(n, ns, side) {
+// `pair`: export drawn beside import (Import & export, 24 Nov 2026), in hues of its own so neither side's
+// brackets take the other's colour — earned indigo to violet, paid to export magenta — where alone it is
+// blue to purple and red, as import's plunge blue and dearest red would be beside it.
+function barBrColor(n, ns, side, pair) {
   var dark = barIsDark();
   var i = ns.indexOf(n), alt = i % 2 ? (dark ? 14 : 13) : 0;
   var ex = side ? side === 'export' : barBrSign() < 0;
-  if (n < 0) return ex ? 'hsl(0, ' + (dark ? 62 : 68) + '%, ' + ((dark ? 48 : 40) + alt) + '%)'
+  if (n < 0) return ex ? (pair ? 'hsl(320, 65%, ' + ((dark ? 52 : 42) + alt) + '%)'
+                               : 'hsl(0, ' + (dark ? 62 : 68) + '%, ' + ((dark ? 48 : 40) + alt) + '%)')
                        : 'hsl(215, 70%, ' + ((dark ? 50 : 40) + alt) + '%)';
   var pos = ns.filter(function(x) { return x >= 0; });
   var lo = pos[0], hi = pos[pos.length - 1];
   var t = hi > lo ? (n - lo) / (hi - lo) : 0;
+  if (ex && pair) return 'hsl(' + Math.round(250 + 40 * t) + ', 55%, ' + ((dark ? 62 : 50) + alt - 10 * t) + '%)';
   if (ex) return 'hsl(' + Math.round(205 + 70 * t) + ', 62%, ' + ((dark ? 54 : 46) + alt - 8 * t) + '%)';
   return 'hsl(' + Math.round(130 * (1 - t)) + ', ' + (dark ? 62 : 68) + '%, ' + ((dark ? 48 : 40) + alt) + '%)';
 }
@@ -2506,34 +2586,44 @@ function barBrVal(v) { return barMetric === 'cost' ? v[1] : v[0]; }
 function barBrSign() { return barBrSeries === 'export' ? -1 : 1; }
 
 function barBrDatasets(aggList) {
-  var ns = barBrNs(aggList), sg = barBrSign();
+  if (barBrBoth()) return barBrSideDatasets(aggList, 'meter', 1, 'import', 'Import ')
+                           .concat(barBrSideDatasets(aggList, 'export', -1, 'export', 'Export '));
+  return barBrSideDatasets(aggList, barBrSeries, barBrSign(), null, '');
+}
+// One series' brackets, drawn above the axis (`sg` 1) or below (-1). `side` names the colours ('import' or
+// 'export'; null, the series shown's) and `prefix` the labels, for Import & export.
+function barBrSideDatasets(aggList, series, sg, side, prefix) {
+  function of(agg) { return ((agg && agg.br) || {})[series] || {}; }
+  var ns = barBrNs(aggList, series);
   // % is each bracket's share of the bar's kWh, in kWh and Cost alike: a plunge's credit takes
   // from a bar's £, so a share of £ could pass 100% beside it, and below 0 means nothing
   var kwh = aggList.map(function(agg) {
-    var b = barBrOf(agg);
+    var b = of(agg);
     return Object.keys(b).reduce(function(s, n) { return s + b[n][0]; }, 0);
   });
   return ns.map(function(n) {
     return {
-      label: barBrLabel(n), _bracket: n,
+      label: prefix + barBrLabel(n), _bracket: n, _side: side || (sg < 0 ? 'export' : 'import'), _sign: sg,
       data: aggList.map(function(agg, i) {
-        var v = barBrOf(agg)[n];
+        var v = of(agg)[n];
         if (!v) return 0;
         if (barBrPct) return kwh[i] > 0 ? sg * Math.round(v[0] / kwh[i] * 10000) / 100 : 0;
         return sg * Math.round(barBrVal(v) * 1000) / 1000;
       }),
-      backgroundColor: barBrColor(n, ns), borderRadius: 0, stack: 'main'
+      backgroundColor: barBrColor(n, ns, side || undefined, !!side), borderRadius: 0, stack: 'main'
     };
   });
 }
 
-// The series picker's choices: the whole meter (named Import, as Running total's is: 16 Nov 2026, the
-// user), the house when there are devices, each device.
+// The series picker's choices: Import & export first where there is export (24 Nov 2026, the user), the whole
+// meter (named Import, as Running total's is: 16 Nov 2026, the user), the house when there are devices, each
+// device, Export.
 function barBrSeriesList() {
   var have = {};
   var src = barPeriod === 'hh' ? barBrHH : barBrDays;
   Object.values(src || {}).forEach(function(b) { Object.keys(b).forEach(function(s) { have[s] = true; }); });
-  var out = [{ id: 'meter', label: 'Import' }];
+  var out = have.export && have.meter ? [{ id: 'both', label: 'Import & export' }] : [];
+  out.push({ id: 'meter', label: 'Import' });
   var devs = barMeters.filter(function(m) { return m.is_sub && have[m.id]; });
   if (devs.length) {
     var main = barMeters.find(function(m) { return m.id === 'electricity_main'; });
@@ -2576,6 +2666,14 @@ function barBrSum(aggList, series) {
   return out;
 }
 
+// The tooltip's line for a bar's series: its kWh, £ and average price
+function barBrFootLine(agg, series, label) {
+  var bs = barBrSum([agg], series), k = 0, c = 0;
+  Object.values(bs).forEach(function(v) { k += v[0]; c += v[1]; });
+  return label + ': ' + k.toFixed(3) + ' kWh  ' + (c < 0 ? '-' : '') + barCurrency + Math.abs(c).toFixed(2)
+    + (k > 0 ? '  (' + (c / k * 100).toFixed(1) + 'p/kWh)' : '');
+}
+
 function barBrAvg(sum) {
   var k = 0, c = 0;
   Object.values(sum).forEach(function(v) { k += v[0]; c += v[1]; });
@@ -2587,6 +2685,13 @@ function barBrNote(aggList) {
   if (!el) return;
   if (!barBrackets()) { el.style.display = 'none'; return; }
   if (barBrError) { el.textContent = "Couldn't read the rate brackets: " + barBrError; el.style.display = ''; return; }
+  if (barBrBoth()) {
+    var bi = barBrAvg(barBrSum(aggList, 'meter')), be = barBrAvg(barBrSum(aggList, 'export'));
+    el.textContent = (bi == null ? 'No grid import' : 'Import paid ' + bi.toFixed(1) + 'p/kWh on average') + '; '
+      + (be == null ? 'no export' : 'export earned ' + be.toFixed(1) + 'p/kWh') + ' in this range.';
+    el.style.display = '';
+    return;
+  }
   var mine = barBrAvg(barBrSum(aggList, barBrSeries));
   var all = barBrAvg(barBrSum(aggList, 'meter'));
   var ex = barBrSeries === 'export';
@@ -2599,27 +2704,41 @@ function barBrNote(aggList) {
 }
 
 function barBrBuildTable(tbl, aggList) {
-  var sum = barBrSum(aggList, barBrSeries);
-  var ns = barBrNs(aggList);                  // the chart's brackets, so the colours agree
+  var both = barBrBoth();
+  var ex = barBrSeries === 'export';
+  var html = '<thead><tr><th>Rate bracket</th><th>kWh</th><th>' + (both ? 'Cost / credit' : ex ? 'Credit' : 'Cost')
+    + '</th><th>Avg p/kWh</th><th>Share of kWh</th></tr>';
+  if (!both) {
+    var one = barBrTableRows(aggList, barBrSeries, null, ex);
+    tbl.innerHTML = html + one.totals + '</thead><tbody>' + one.rows + '</tbody>';
+    return;
+  }
+  // Import & export: a section each, its totals at its head
+  var imp = barBrTableRows(aggList, 'meter', 'import', false), exp = barBrTableRows(aggList, 'export', 'export', true);
+  tbl.innerHTML = html + '</thead><tbody>' + imp.totals.replace('>Totals<', '>Import<') + imp.rows
+    + exp.totals.replace('>Totals<', '>Export<') + exp.rows + '</tbody>';
+}
+// A series' rows for the table: {totals: its totals row, rows: a row a bracket}
+function barBrTableRows(aggList, series, side, ex) {
+  var sum = barBrSum(aggList, series);
+  var ns = barBrNs(aggList, series);          // the chart's brackets, so the colours agree
   var tk = 0, tc = 0;
   ns.forEach(function(n) { tk += sum[n][0]; tc += sum[n][1]; });
   function money(v) { var a = Math.abs(v).toFixed(2); return (v < 0 && Number(a) !== 0 ? '-' : '') + barCurrency + a; }
   function avg(k, c) { return k > 0 ? (c / k * 100).toFixed(2) + 'p' : '—'; }
   function share(k) { return tk > 0 ? (k / tk * 100).toFixed(1) + '%' : '—'; }
-  var ex = barBrSeries === 'export';
-  var html = '<thead><tr><th>Rate bracket</th><th>kWh</th><th>' + (ex ? 'Credit' : 'Cost')
-    + '</th><th>Avg p/kWh</th><th>Share of kWh</th></tr>';
-  html += '<tr class="totals-row"><td style="font-weight:600;">Totals</td><td>' + tk.toFixed(3) + ' kWh</td><td>'
-    + money(tc) + '</td><td>' + avg(tk, tc) + '</td><td>' + (tk > 0 ? '100.0%' : '—') + '</td></tr></thead><tbody>';
+  var totals = '<tr class="totals-row"><td style="font-weight:600;">Totals</td><td>' + tk.toFixed(3) + ' kWh</td><td>'
+    + money(tc) + '</td><td>' + avg(tk, tc) + '</td><td>' + (tk > 0 ? '100.0%' : '—') + '</td></tr>';
+  var rows = '';
   ns.forEach(function(n) {
     var v = sum[n];
-    html += '<tr><td><span class="bar-legend-dot" style="background:' + barBrColor(n, ns) + ';margin-right:5px;"></span>'
+    rows += '<tr><td><span class="bar-legend-dot" style="background:' + barBrColor(n, ns, side || undefined, !!side) + ';margin-right:5px;"></span>'
       + barBrLabel(n) + '</td><td>' + v[0].toFixed(3) + ' kWh</td><td>' + money(v[1]) + '</td><td>'
       + avg(v[0], v[1]) + '</td><td>' + share(v[0]) + '</td></tr>';
   });
-  if (!ns.length) html += '<tr><td colspan="5" style="color:var(--muted);">' + (ex ? 'No export' : 'No grid import')
+  if (!ns.length) rows += '<tr><td colspan="5" style="color:var(--muted);">' + (ex ? 'No export' : 'No grid import')
     + ' in this range.</td></tr>';
-  tbl.innerHTML = html + '</tbody>';
+  return {totals: totals, rows: rows};
 }
 
 // ── Flow (docs/history/design/EMT-v5_flow_design.md) ─────────────────────────────────────────────────────
@@ -3154,7 +3273,6 @@ function barSetBrPct(on) { barBrPct = !!on; barSaveState(); barRender(); }
 // What the view shows and hides: the series picker and % in Rate brackets; the Net line, the
 // standing charge, CO₂ and the period sort only with the devices.
 // [period, its name in the bar views, its name in Flow]
-var FLOW_PERIOD_NAMES = [['hh', 'HH', 'Daily'], ['daily', 'Daily', 'Monthly'], ['monthly', 'Monthly', 'Yearly']];
 function barBrSyncUI() {
   var on = barBrackets(), fl = barFlow();
   function vis(id, show, how) { var e = document.getElementById(id); if (e) e.style.display = show ? (how || '') : 'none'; }
@@ -3165,15 +3283,6 @@ function barBrSyncUI() {
   vis('bar-sort-btn', !on && !fl);
   vis('bar-flow-head', fl, 'flex');
   var spanOk = barSpans().length > 0;
-  // Flow totals the span the bars would show, so its buttons are named by that span (4 Nov 2026, the
-  // user): HH is a day, Daily a month, Monthly the years ticked
-  FLOW_PERIOD_NAMES.forEach(function(p) {
-    var b = document.getElementById('bar-' + p[0] + '-btn');
-    if (!b) return;
-    b.textContent = fl ? p[2] : p[1];
-    if (p[0] === 'hh') b.title = fl ? "A day's flow" : 'Half-hourly breakdown of a single day';
-  });
-  vis('bar-yearly-btn', !fl);
   vis('bar-span-btn', spanOk);
   // not before the eras and tariffs are known: a remembered Span is drawn when they land
   if (barPeriod === 'span' && !spanOk && !barSpansPending()) barPeriod = 'monthly';
@@ -3184,6 +3293,14 @@ function barBrSyncUI() {
   var pc = document.getElementById('bar-br-pct');
   if (pc) pc.checked = barBrPct;
   if (on) barBrSyncPicker();
+}
+
+// The Net and Running total lines by the number of bars (24 Nov 2026, the user: a span by the day, ~860 bars, drew
+// them as a thick band): a dot on each point up to two months' days (HH's 48 among them), none beyond — a hover
+// still shows one — and a thinner line past half a year. Pure.
+function barLineStyle(n) {
+  if (n <= 62) return {point: 3, width: 2};
+  return {point: 0, width: n <= 186 ? 1.5 : 1};
 }
 
 function barGetDatasets(labels, aggList, isHH) {
@@ -3247,15 +3364,26 @@ function barGetDatasets(labels, aggList, isHH) {
     }
   }
 
+  var _ls = barLineStyle(aggList.length);
   if (barShowNet()) {
     datasets.push({
       type: 'line', label: barNetLabel(), _net: true,
       data: barNetSeries(aggList, isHH),
       yAxisID: isHH ? 'yNet' : 'y',
       borderColor: barNetColor(), backgroundColor: barNetColor(),
-      borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, fill: false, tension: 0,
+      borderWidth: _ls.width, pointRadius: _ls.point, pointHitRadius: 6, pointHoverRadius: 5, fill: false, tension: 0,
       stack: 'net',           // its own stack: the line is the net, not stacked on the bars
       order: -1               // drawn over the bars
+    });
+  }
+  if (!isHH && barShowRun()) {
+    datasets.push({
+      type: 'line', label: 'Running total', _net: true, _run: true,
+      data: barNetSeries(aggList, false, true),
+      yAxisID: 'yNet',
+      borderColor: barNetColor(), backgroundColor: barNetColor(), borderDash: [6, 4],
+      borderWidth: _ls.width, pointRadius: _ls.point ? 2 : 0, pointHitRadius: 6, pointHoverRadius: 5, fill: false, tension: 0,
+      stack: 'run', order: -1
     });
   }
 
@@ -3562,6 +3690,8 @@ function barRender() {
   // The Net box names what it draws: on HH a running total of the day's net
   var _nt = document.getElementById('bar-net-text'), _nw = document.getElementById('bar-net-wrap');
   if (_nt) _nt.textContent = barNetLabel();
+  var _rw = document.getElementById('bar-run-wrap');
+  if (_rw) _rw.style.display = barRunAvailable() ? 'flex' : 'none';
   if (_nw) _nw.title = barPeriod === 'hh' ? "Draw the day's net so far (import minus export) as a line over the bars"
                                           : 'Draw import minus export as a line over the bars';
 
@@ -3621,7 +3751,8 @@ function barRender() {
   var _ew = document.getElementById('bar-eras-wrap');
   if (_ew) _ew.style.display = barErasAvailable() ? 'flex' : 'none';
   var showEras = barShowEras() && pd.bucketRanges && pd.bucketRanges.length;
-  var netAxis = !!pd.isHH && barShowNet();   // a boolean: Chart.js shows an axis whose display is undefined
+  // a boolean: Chart.js shows an axis whose display is undefined
+  var netAxis = (!!pd.isHH && barShowNet()) || (!pd.isHH && barShowRun());
   var axes = netAxis ? barAlignZero(datasets, tariffLanes) : null;
   // Month order: shade each bar by its year (older lighter → newer darker) so
   // adjacent same-month bars from different years are distinguishable. No legend
@@ -3661,7 +3792,7 @@ function barRender() {
             var v = c.raw;
             if (barBrackets()) {
               if (!v) return null;
-              v *= barBrSign();                       // export is drawn below the axis; its figures are not negative
+              v *= c.dataset._sign || barBrSign();    // export is drawn below the axis; its figures are not negative
               return ' ' + c.dataset.label + ': ' + (barBrPct ? v.toFixed(1) + '%' : barFmt(v));
             }
             if (barMetric === 'co2') return ' ' + c.dataset.label + ': ' + barCo2Fmt(v);
@@ -3676,11 +3807,9 @@ function barRender() {
             var agg = barGetDataForPeriod().aggList[idx];
             if (!agg) return '';
             if (barBrackets()) {
-              var _bs = barBrSum([agg], barBrSeries), _bk = 0, _bc = 0;
-              Object.values(_bs).forEach(function(v) { _bk += v[0]; _bc += v[1]; });
-              return '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' + barBrSeriesLabel(barBrSeries) + ': '
-                + _bk.toFixed(3) + ' kWh  ' + (_bc < 0 ? '-' : '') + barCurrency + Math.abs(_bc).toFixed(2)
-                + (_bk > 0 ? '\nAverage: ' + (_bc / _bk * 100).toFixed(1) + 'p/kWh' : '');
+              return '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' + (barBrBoth()
+                ? barBrFootLine(agg, 'meter', 'Import') + '\n' + barBrFootLine(agg, 'export', 'Export')
+                : barBrFootLine(agg, barBrSeries, barBrSeriesLabel(barBrSeries)));
             }
             if (barMetric === 'co2') {
               var net = agg.carbon_g_net; var tot = agg.carbon_g_total;
@@ -3719,7 +3848,8 @@ function barRender() {
                                   axes ? { stepSize: axes.y.step } : {},
                                   barBrackets() && barBrPct ? { callback: function(v) { return Math.abs(v) + '%'; } } : {}),
              grace: '2%' }, axes ? { min: axes.y.min, max: axes.y.max, grace: 0 } : {},
-             barBrackets() && barBrPct ? (barBrSign() < 0 ? { min: -100, max: 0, grace: 0 } : { min: 0, max: 100, grace: 0 }) : {}),
+             barBrackets() && barBrPct ? (barBrBoth() ? { min: -100, max: 100, grace: 0 }
+               : barBrSign() < 0 ? { min: -100, max: 0, grace: 0 } : { min: 0, max: 100, grace: 0 }) : {}),
         yNet: Object.assign({ display: netAxis, position: 'right', stacked: false,
              grid: { display: false },
              title: { display: netAxis, text: 'Running total', color: barGetTheme().axisC, font: {size:11} },
@@ -3856,20 +3986,20 @@ function barDsColor(d) {
 }
 
 // One bracket picked out in the bars, or none (null) for them all as drawn
-function barBrHighlight(n) {
+function barBrHighlight(n, side) {
   var ch = barChartInstance;
   if (!ch) return;
   ch.data.datasets.forEach(function(d) {
     if (d._bracket == null) return;
     if (d._color == null) d._color = d.backgroundColor;
-    d.backgroundColor = n == null || d._bracket === n ? d._color : barBrFaded(d._color);
+    d.backgroundColor = n == null || (d._bracket === n && (!side || d._side === side)) ? d._color : barBrFaded(d._color);
   });
   // Chart.js's hover mode. 'none' leaves a bar's shared options as they were, so the colour never reached the bars
   ch.update('active');
 }
 
-function barBrScale(el, ds) {
-  var byN = {};
+function barBrScale(el, ds, title) {
+  var byN = {}, side = barBrBoth() && ds.length ? ds[0]._side : null;
   ds.forEach(function(d) { byN[d._bracket] = d; });
   var ns = ds.map(function(d) { return d._bracket; });
   var first = ns[0], last = ns[ns.length - 1];
@@ -3877,14 +4007,14 @@ function barBrScale(el, ds) {
   var segs = '';
   for (var n = first; n <= last; n++) {
     segs += '<span data-n="' + n + '" style="flex:1 1 0;min-width:0;height:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:'
-      + (byN[n] ? barDsColor(byN[n]) : barBrColor(n, ns) + ';opacity:.25') + ';"></span>';
+      + (byN[n] ? barDsColor(byN[n]) : barBrColor(n, ns, side || undefined, !!side) + ';opacity:.25') + ';"></span>';
   }
   var ticks = barBrScaleTicks(lo, hi).map(function(p) {
     var move = p === lo ? '0' : p === hi ? '-100%' : '-50%';
     return '<span style="position:absolute;white-space:nowrap;left:' + ((p - lo) / (hi - lo) * 100) + '%;transform:translateX(' + move + ');">'
       + barBrPence(p) + 'p</span>';
   }).join('');
-  var rest = 'Rate, p/kWh';
+  var rest = (title ? title + ' rate' : 'Rate') + ', p/kWh';
   // the readout wraps under the strip where there is no room beside it (a phone)
   el.innerHTML = '<div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:0 12px;flex:1 1 100%;width:100%;">'
     + '<div style="flex:1 1 300px;min-width:0;">'
@@ -3907,8 +4037,8 @@ function barBrScale(el, ds) {
     var v = e.target.dataset && e.target.dataset.n;
     if (v === undefined) return;
     v = Number(v);
-    read.textContent = barBrLabel(v) + (byN[v] ? '' : ': none');
-    barBrHighlight(byN[v] ? v : null);
+    read.textContent = (title ? title + ' ' : '') + barBrLabel(v) + (byN[v] ? '' : ': none');
+    barBrHighlight(byN[v] ? v : null, side);
   });
   strip.addEventListener('mouseleave', function() { read.textContent = rest; barBrHighlight(null); });
 }
@@ -3923,10 +4053,27 @@ function barBuildLegend() {
     return '<span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:16px;height:2px;' +
       'background:' + color + ';"></span>' + label + '</span>';
   }
-  var net = barShowNet() ? line(barNetColor(), barNetLabel()) : '';
+  function dashed(color, label) {
+    return '<span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:16px;height:0;' +
+      'border-top:2px dashed ' + color + ';"></span>' + label + '</span>';
+  }
+  var net = (barShowNet() ? line(barNetColor(), barNetLabel()) : '') +
+            (barShowRun() ? dashed(barNetColor(), 'Running total') : '');      // never on HH: barRunAvailable
   if (barBrackets()) {
     // The brackets with usage in view, cheapest first
     var _ds = (barChartInstance ? barChartInstance.data.datasets : []).filter(function(d) { return d._bracket != null; });
+    if (_ds.length > BAR_BR_KEYS_MAX && barBrBoth()) {
+      // Import & export with many brackets: a strip each, import's then export's
+      [['import', 'Import'], ['export', 'Export']].forEach(function(sd) {
+        var part = _ds.filter(function(d) { return d._side === sd[0]; });
+        if (!part.length) return;
+        var box = document.createElement('div');
+        box.style.cssText = 'display:flex;flex:1 1 100%;width:100%;';
+        el.appendChild(box);
+        barBrScale(box, part, sd[1]);
+      });
+      return;
+    }
     if (_ds.length > BAR_BR_KEYS_MAX) { barBrScale(el, _ds); return; }
     _ds.forEach(function(d) { el.innerHTML += dot(barDsColor(d), d.label); });
     return;
@@ -4506,7 +4653,7 @@ function barAccSyncUI() {
   vis('bar-acc', on, 'grid');
   // its own standing charge box is with the toggles now, outside bar-acc-wrap: hidden with the view
   if (!on) { vis('bar-acc-standing-wrap', false); return; }
-  ['bar-cal-seg', 'bar-order-seg', 'bar-spanres-seg', 'bar-standing-wrap', 'bar-net-wrap',
+  ['bar-cal-seg', 'bar-order-seg', 'bar-res-seg', 'bar-standing-wrap', 'bar-net-wrap', 'bar-run-wrap',
    'bar-sort-btn', 'bar-br-wrap', 'bar-br-series', 'bar-br-note'].forEach(function(id) { vis(id, false); });
   // PR 4: the eras on every drawing; the tariffs along the Lifetime line
   vis('bar-eras-wrap', !!(barEras && barEras.length), 'flex');
@@ -5462,26 +5609,68 @@ new MutationObserver(function(muts) {
 }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'], attributeOldValue: true });
 
 function barSetActive(segId, el) { document.querySelectorAll('#'+segId+' .bar-seg-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
-function barSetPeriod(v, el) { barPeriod = v; barSetActive('bar-period-seg', el); barSaveState(); barRender(); }
+// Period or Span, then the resolution: what each bar holds (24 Nov 2026, the user). Under Period the
+// resolution picks the period the bars show — HH a day's half-hours, Day a month's days, Month the
+// years' months, Year the years; Flow draws one bar, so there Day is a day's flow, Month a month's,
+// Year the years ticked, and HH is not offered. Under Span it is the span's bars; no HH on a span.
+// Pure.
+var BAR_RES_PERIOD = {hh: 'hh', day: 'daily', month: 'monthly', year: 'yearly'};
+var BAR_RES_PERIOD_FLOW = {day: 'hh', month: 'daily', year: 'monthly'};
+function barResOfPeriod(period, flow) {
+  var m = flow ? BAR_RES_PERIOD_FLOW : BAR_RES_PERIOD;
+  for (var r in m) if (m[r] === period) return r;
+  return null;
+}
+function barPeriodOfRes(res, flow) {
+  return (flow ? BAR_RES_PERIOD_FLOW : BAR_RES_PERIOD)[res] || null;
+}
+function barResOffered(period, flow) {
+  if (period === 'span') return flow ? [] : ['day', 'month', 'year'];
+  return flow ? ['day', 'month', 'year'] : ['hh', 'day', 'month', 'year'];
+}
+function barSetKind(v, el) {
+  if (v === 'span') { if (barPeriod !== 'span') barLastPeriod = barPeriod; barPeriod = 'span'; }
+  else {
+    barPeriod = barLastPeriod;
+    if (barFlow() && barPeriod === 'yearly') barPeriod = 'monthly';
+  }
+  barSaveState(); barSyncUI(); barRender();
+}
+function barSetRes(v, el) {
+  if (barPeriod === 'span') {
+    if (v === 'hh') return;
+    barSpanRes = v;
+  } else {
+    var p = barPeriodOfRes(v, barFlow());
+    if (!p) return;
+    barPeriod = barLastPeriod = p;
+  }
+  barSaveState(); barSyncUI(); barRender();
+}
 function barSetMetric(v, el) { barMetric = v; barSetActive('bar-metric-seg', el); barSaveState(); barRender(); }
 function barSetOrder(v, el)  { barMonthOrder = v; barSetActive('bar-order-seg', el); barSaveState(); barRender(); }
-// Whether the Date/Month order and Span's Day/Month/Year show: the order on Monthly, and on a span by the day or the
-// month (not by the year, nor Flow's one bar); the resolution on a span (not Flow's). Neither on Running total. Pure.
+// Whether the Date/Month order and the resolution show: the order on Monthly, and on a span by the day or the
+// month (not by the year, nor Flow's one bar); the resolution everywhere but Flow's one bar on a span. Neither
+// on Running total. Pure.
 function barOrderResShown(period, show, res) {
   var spanBars = period === 'span' && show !== 'flow' && show !== 'running';
-  return {order: (period === 'monthly' && show !== 'running') || (spanBars && res !== 'year'), res: spanBars};
+  return {order: (period === 'monthly' && show !== 'running') || (spanBars && res !== 'year'),
+          res: show !== 'running' && !(period === 'span' && show === 'flow')};
 }
 function barOrderResSync() {
-  var res = barPeriod === 'span' ? barSpanResolution(barSpanCurrent()) : null;
+  var fl = barFlow();
+  var res = barPeriod === 'span' ? barSpanResolution(barSpanCurrent()) : barResOfPeriod(barPeriod, fl);
   var v = barOrderResShown(barPeriod, barShow, res);
-  var o = document.getElementById('bar-order-seg'), r = document.getElementById('bar-spanres-seg');
+  var o = document.getElementById('bar-order-seg'), r = document.getElementById('bar-res-seg');
   if (o) o.style.display = v.order ? 'inline-flex' : 'none';
   if (r) r.style.display = v.res ? 'inline-flex' : 'none';
-  document.querySelectorAll('#bar-spanres-seg .bar-seg-btn').forEach(function(b) {
-    b.classList.toggle('active', !!res && (b.getAttribute('onclick') || '').indexOf("'" + res + "'") !== -1);
+  var offered = barResOffered(barPeriod, fl);
+  document.querySelectorAll('#bar-res-seg .bar-seg-btn').forEach(function(b) {
+    var br = b.getAttribute('data-res');
+    b.style.display = offered.indexOf(br) !== -1 ? '' : 'none';
+    b.classList.toggle('active', !!res && br === res);
   });
 }
-function barSetSpanRes(v, el) { barSpanRes = v; barSetActive('bar-spanres-seg', el); barSaveState(); barSyncUI(); barRender(); }
 function barSetCalendar(v, el) { barCalendar = v; barSetActive('bar-cal-seg', el); barSaveState(); barRender(); }
 
 if (!window.Chart) {

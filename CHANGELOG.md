@@ -7,6 +7,17 @@ internal name for everything before the first public release and never appears i
 
 ## [Unreleased]
 
+- **Rate brackets: Import & export.** Where you export, the picker offers both at once, first in its list: import above the axis
+  and export below, each in its own colours, with a section each in the table. In Cost the bars are money —
+  above the axis what you paid, below what you were paid — so a plunge's credit sits below with the export.
+- **Usage Stats: Period or Span, then the bars.** The period row was HH, Daily, Monthly, Yearly and Span,
+  with Day, Month and Year under Span only, and Flow renamed the buttons. It is now **Period** or **Span**, and
+  one row for what each bar holds: **HH**, **Day**, **Month** or **Year**. Under Period, HH shows a day, Day a
+  month, Month and Year the years, picked in the row below as before; a span's bars are a day, a month or a
+  year. Your view is remembered as it was. Each group of buttons has a rule between it and the next.
+- **Usage Stats: Running total by the day, the month or the year.** As HH has: the net so far from the first
+  bar, drawn on its own axis; its last point is the table's Total. With many bars (a span by the day) the Net and
+  Running total lines drop their dots and thin, so they read as lines.
 - **A slow moment no longer restarts EMT's work.** On an SD card, saving can hold EMT for 20 seconds or
   more; Home Assistant may drop the connection meanwhile, and on reconnecting EMT ran its whole startup
   again, which held it as long a second time. It now reconnects and carries on, and runs its startup
