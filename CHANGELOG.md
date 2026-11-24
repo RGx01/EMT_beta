@@ -5,7 +5,7 @@ All notable changes to EMT are recorded here.
 Versions are CalVer — `YYYY.M.PATCH` — matching Home Assistant's own convention. `v5` is the
 internal name for everything before the first public release and never appears in a version string.
 
-## [Unreleased]
+## [2026.11.0b34] — 2026-11-24
 
 - **Rate brackets: Import & export.** Where you export, the picker offers both at once, first in its list: import above the axis
   and export below, each in its own colours, with a section each in the table. In Cost the bars are money —
