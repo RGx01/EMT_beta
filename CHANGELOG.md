@@ -5,11 +5,14 @@ All notable changes to EMT are recorded here.
 Versions are CalVer — `YYYY.M.PATCH` — matching Home Assistant's own convention. `v5` is the
 internal name for everything before the first public release and never appears in a version string.
 
-## [2026.11.0b34] — 2026-11-24
+## [2026.11.0b35] — 2026-11-25
 
 - **Retry settlement asks for the bill too.** The settlement pill's *Retry settlement* fetched the meter's
   half-hours and stopped there: a day it settled stayed an estimate until the hourly check asked for its
   bill. It now asks for the bill straight after, and the pill says "Asking Octopus…" until both are in.
+
+## [2026.11.0b34] — 2026-11-24
+
 - **Rate brackets: Import & export.** Where you export, the picker offers both at once, first in its list: import above the axis
   and export below, each in its own colours, with a section each in the table. In Cost the bars are money —
   above the axis what you paid, below what you were paid — so a plunge's credit sits below with the export.
