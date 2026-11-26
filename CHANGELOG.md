@@ -5,7 +5,7 @@ All notable changes to EMT are recorded here.
 Versions are CalVer — `YYYY.M.PATCH` — matching Home Assistant's own convention. `v5` is the
 internal name for everything before the first public release and never appears in a version string.
 
-## [Unreleased]
+## [2026.11.0b36] — 2026-11-26
 
 - **The bill card matches an Agile statement.** Octopus prices each Agile half-hour at its rate × its kWh
   rounded to 0.01 kWh, so a half-hour of a few watt-hours — a home running from its battery has hundreds a
